@@ -1,0 +1,215 @@
+" Use Vim settings, rather than Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+set term=xterm
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+set nobackup
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set wildmenu
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
+" Switch syntax highlighting on
+" Also switch on highlighting the last used search pattern.
+syntax on
+
+" Enable file type detection.
+" Use the default filetype settings, so that mail gets 'tw' set to 72,
+" 'cindent' is on in C files, etc.
+" Also load indent files, to automatically do language-dependent indenting.
+filetype plugin indent on
+
+" When editing a file, always jump to the last known cursor position.
+" Don't do it when the position is invalid or when inside an event handler
+" (happens when dropping a file on gvim).
+" Also don't do it when the mark is in the first line, that is the default
+" position when opening a file.
+autocmd BufReadPost *
+  \ if line("'\"") > 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
+
+"Set to auto read when a file is changed from the outside
+if exists("&autoread")
+	set autoread
+endif
+
+
+"set ignorecase
+"set cursorline
+set showmatch
+set nu
+set ai
+set si
+set shiftwidth=8
+set cindent
+set incsearch
+set hlsearch
+"set cc=81
+
+"TagList configuration
+let Tlist_Auto_Highlight_Tag = 1
+let Tlist_Auto_Open = 0
+let Tlist_Auto_Update = 1
+let Tlist_Close_On_Select = 0
+let Tlist_Compact_Format = 0
+let Tlist_Display_Prototype = 0
+let Tlist_Display_Tag_Scope = 1
+let Tlist_Enable_Fold_Column = 0
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_File_Fold_Auto_Close = 0
+let Tlist_GainFocus_On_ToggleOpen = 0
+let Tlist_Hightlight_Tag_On_BufEnter = 1
+let Tlist_Inc_Winwidth = 0
+let Tlist_Max_Submenu_Items = 1
+let Tlist_Max_Tag_Length = 30
+let Tlist_Process_File_Always = 0
+let Tlist_Show_Menu = 0
+let Tlist_Show_One_File = 0
+let Tlist_Sort_Type = "order"
+let Tlist_Use_Horiz_Window = 0
+let Tlist_Use_Left_Window = 0
+let Tlist_Use_Right_Window = 1
+let Tlist_WinWidth = 40
+let Tlist_php_settings = 'php;c:class;i:interfaces;d:constant;f:function'
+map <F7> :Tlist<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""NERDTree
+"NERDTree
+let NERDTreeQuitOnOpen = 0
+let NERDChristmasTree = 1
+let NERDTreeShowHidden = 1
+map <F6> :NERDTreeToggle<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""
+"WindowManager
+"""""""""""""""""""""""""""""""""""""""""""
+"let g:winManagerWindowLayout = "FileExplorer|TagList"
+let g:winManagerWindowLayout = "TagList"
+let g:winManagerWidth = 25
+let g:defaultExplorer = 0
+let g:persistentBehaviour = 0
+""map <F2> :WMToggle<CR>
+map <c-w><c-b> :BottomExplorerWindow<cr>
+map <c-w><c-f> :FirstExplorerWindow<cr>
+
+"colorscheme evening
+colorscheme desert
+"colorscheme zellner
+
+set laststatus=2
+
+set statusline=%<%f%h%m%r\ [%{&ff}]\ [%Y]%=[%b]\ [0x%B]\ %l,%c%V\ %P\ %{strftime(\"%b\ %d\ %a\ %H:%M\")}
+highlight WhitespaceEOL ctermbg=red guibg=red
+match WhitespaceEOL /\s\+$/
+
+" For tab ops
+map <F2> :tabn<cr>
+map <F3> :tabp<cr>
+
+set tabstop=4
+set expandtab
+
+let _pwd = getcwd()
+let _file = expand("%")
+
+"Kenrel code using tab
+if strridx(_pwd, "linux") != -1 || strridx(_file, "linux") != -1
+	set noexpandtab
+endif
+
+"KVM code using tab
+if strridx(_pwd, "kvm") != -1 || strridx(_file, "kvm") != -1
+	set noexpandtab
+endif
+
+"Most of qboot code using tab
+if strridx(_pwd, "qboot") != -1 || strridx(_file, "qboot") != -1
+	set noexpandtab
+endif
+
+set noexpandtab
+
+"set softtabstop=4
+set shiftwidth=4
+set nobackup
+set nowritebackup
+
+
+"ÉèÖÃ¶àÎÄ¼þ²éÕÒ£¬µÝ¹éËÑË÷Ä¿Â¼
+"map <F6> :call Search_Word()<CR><CR>
+function Search_Word()
+	if !exists("w:isErrorListOpen")
+		let w:isErrorListOpen = 0
+	endif
+
+	let w = expand("<cword>")   "ÔÚµ±Ç°¹â±ê×¥´Ê
+	"execute "grep " .w. "*.c"
+	execute "grep " .w. " *.c *.h *.cpp *.txt" 
+	botright copen
+	let w:isErrorListOpen = 1
+endfunction
+
+"map <F4> to open/close ErrorList
+map <F4> :call CloseErrorList()<CR>
+function CloseErrorList()
+	if !exists("w:isErrorListOpen")
+		let w:isErrorListOpen = 0
+	endif
+
+	if w:isErrorListOpen == 0
+		botright copen
+		let w:isErrorListOpen = 1
+	else
+		cclose
+		let w:isErrorListOpen = 0
+	endif
+endfunction
+
+"map <F5> to build tags
+"map <F5> :!ctags -R<CR><CR>
+
+nmap <F12> :ConqueTermTab /bin/bash<CR>
+
+"map cscope 
+set cscopequickfix=c-,d-,e-,i-,s-,t- 
+
+nmap <F5>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <F5>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <F5>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <F5>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <F5>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <F5>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <F5>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <F5>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+
+set foldmethod=syntax
+"set foldmethod=manual
+"set foldmethod=marker
+set foldcolumn=0
+"set foldclose=all
+set foldlevel=999
+
+"map <F3> to open & close folder
+"set foldenable
+nnoremap <F3> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+" ¿¿tab¿¿¿
+" set list
+" ¿¿tab¿¿¿¿¿
+" set lcs=tab:\|\ ,nbsp:%,trail:-
+" ¿¿¿¿tab¿¿¿
+" highlight LeaderTab guifg=#666666
+" ¿¿¿¿tab
+" match LeaderTab /^\t/
