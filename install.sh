@@ -1,6 +1,20 @@
 #!/bin/sh
 
-cp vim/colors/*  ~/.vim/colors/
-cp vim/plugin/*  ~/.vim/plugin/
-cp vim/doc/*     ~/.vim/doc/*
+# set -x
+function copy_vim_conf
+{
+	src="vim/$1/*"
+	dst="/$user/.vim/$1/"
+
+	if [ ! -d "$dst" ] ; then
+		mkdir $dst
+	fi
+	cp $src	$dst
+}
+
+user=$(whoami)
+copy_vim_conf colors
+copy_vim_conf plugin
+copy_vim_conf doc
+
 cp vim/vimrc 	~/.vimrc
